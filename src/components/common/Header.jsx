@@ -20,7 +20,7 @@ export default function Home({ actualPage }) {
 }
 
 const Header = styled.div`
-  position: absolute;
+  position: fixed;
   left: 0px;
   top: 0px;
   width: 100%;
