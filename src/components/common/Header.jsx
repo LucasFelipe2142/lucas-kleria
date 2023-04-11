@@ -57,4 +57,7 @@ const Header = styled.div`
   }
 `;
 
-const Logo = styled.img``;
+const Logo = styled.img`
+  width: 33px;
+  height: 33px;
+`;
