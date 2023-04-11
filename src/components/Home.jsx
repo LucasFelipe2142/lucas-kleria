@@ -60,6 +60,7 @@ const Container = styled.div`
 `;
 const Img_first = styled.img`
   margin-top: 54px;
+  width: 100%;
 `;
 
 const Button = styled.div`
