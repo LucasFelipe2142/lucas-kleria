@@ -25,15 +25,10 @@ const Header = styled.div`
   top: 0px;
   width: 100%;
   h1 {
-    width: 123px;
-    height: 18px;
-    left: 126px;
-    top: 18px;
-
     font-family: "Comic Neue";
     font-style: normal;
     font-weight: 400;
-    font-size: 20px;
+    font-size: 1rem;
     line-height: 18px;
     /* identical to box height, or 90% */
 
