@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import Header from "./common/Header";
 import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
+import Countdown from "./Countdown";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function Home() {
     <Container>
       <Header actualPage={ACTUAL_PAGE} />
       <Img_first src={photo} />
+      <Countdown />
       <p className="acknowledgment">
         Queridos amigos e familiares <br></br>É com muita alegria que convidamos
         vocês para compartilhar conosco o dia mais importante de nossas vidas: o
