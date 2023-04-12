@@ -31,7 +31,7 @@ export default function Home() {
         orações, e esperamos ver vocês lá! Com amor e gratidão,<br></br>Kléria e
         Lucas
       </p>
-      <Button onClick={navigate("/confirmar-presenca")}>
+      <Button onClick={() => navigate("/confirmar-presenca")}>
         CONFIRMAR PRESENÇA
       </Button>
       <Button>MENSAGEM PARA OS NOIVOS</Button>
