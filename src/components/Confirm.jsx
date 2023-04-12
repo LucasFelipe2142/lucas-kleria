@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
 import Header from "./common/Header";
@@ -9,6 +10,10 @@ import Countdown from "./Countdown";
 import Map from "./common/Map";
 
 export default function Confirm() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
   const [nomeConvidado, setNomeConvidado] = useState("");
   const navigate = useNavigate();
   const ACTUAL_PAGE = "Confirmar Presença";
