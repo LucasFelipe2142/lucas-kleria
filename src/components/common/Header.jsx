@@ -1,16 +1,68 @@
 import axios from "axios";
 import styled from "styled-components";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
-import { List } from "react-bootstrap-icons";
+import { List, XCircleFill } from "react-bootstrap-icons";
 
 export default function Home({ actualPage }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  function handleOpenMenu() {
+    setMenuOpen(true);
+  }
+
+  function handleCloseMenu() {
+    setMenuOpen(false);
+  }
 
   return (
     <Header>
       <div className="container">
-        <List color="white" />
+        <div onClick={handleOpenMenu}>
+          <List color="white" />
+        </div>
+        <Menu className={menuOpen ? "menu open" : "menu"}>
+          <div className="menu-header">
+            <strong>Menu</strong>
+            <button className="close-button" onClick={handleCloseMenu}>
+              <XCircleFill size={20} color="white" />
+            </button>
+          </div>
+
+          <ul>
+            <li>
+              <button className="menu-button" onClick={() => navigate("/")}>
+                Página inicial
+              </button>
+            </li>
+            <li>
+              <button
+                className="menu-button"
+                onClick={() => navigate("/confirmar-presenca")}
+              >
+                Confirmar presença
+              </button>
+            </li>
+            <li>
+              <button
+                className="menu-button"
+                onClick={() => navigate("/mensagens")}
+              >
+                Mensagem para os noivos
+              </button>
+            </li>
+            <li>
+              <button
+                className="menu-button"
+                // onClick={() => navigate("/lista-de-presentes")}
+              >
+                Lista de presentes
+              </button>
+            </li>
+          </ul>
+        </Menu>
+
         <h1>{actualPage} </h1>
         <Logo src={logo} />
       </div>
@@ -55,4 +107,89 @@ const Header = styled.div`
 const Logo = styled.img`
   width: 33px;
   height: 33px;
+`;
+
+const Menu = styled.div`
+  z-index: 1;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100%;
+  background-color: navy;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: left 0.3s ease-in-out;
+
+  &.open {
+    display: block;
+    left: 0;
+  }
+
+  font-family: "Comic Neue", sans-serif;
+
+  ul {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    margin-top: 60px;
+    padding: 0;
+  }
+
+  ul li {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  button.menu-button {
+    display: block;
+    width: 90%;
+    height: 40px;
+    background-color: white;
+    color: navy;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 10px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    outline: none;
+  }
+
+  button.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .menu-header strong {
+    font-weight: bold;
+    font-size: 20px;
+    margin-right: 10px;
+    color: white;
+  }
 `;

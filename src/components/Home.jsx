@@ -34,7 +34,9 @@ export default function Home() {
       <Button onClick={() => navigate("/confirmar-presenca")}>
         CONFIRMAR PRESENÇA
       </Button>
-      <Button>MENSAGEM PARA OS NOIVOS</Button>
+      <Button onClick={() => navigate("/mensagens")}>
+        MENSAGEM PARA OS NOIVOS
+      </Button>
       <Button>LISTA DE PRESENTES</Button>
       <Footer />
     </Container>
@@ -45,7 +47,7 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin-bottom: 30px;
+  padding-bottom: 30px;
   .acknowledgment {
     margin-top: 20px;
     margin-bottom: 20px;
