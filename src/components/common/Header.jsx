@@ -1,62 +1,65 @@
 import axios from "axios";
 import styled from "styled-components";
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
 import { List, XCircleFill } from "react-bootstrap-icons";
+import { useMenu } from "../../contexts/MeuContext";
 
-export default function Home({ actualPage }) {
-  const [menuOpen, setMenuOpen] = useState(false);
+export default function Header({ actualPage }) {
+  const { isOpen, openMenu, closeMenu } = useMenu();
   const navigate = useNavigate();
-  function handleOpenMenu() {
-    setMenuOpen(true);
-  }
-
-  function handleCloseMenu() {
-    setMenuOpen(false);
-  }
 
   return (
-    <Header>
+    <HeaderContainer>
       <div className="container">
-        <div onClick={handleOpenMenu}>
+        <div onClick={openMenu}>
           <List color="white" />
         </div>
-        <Menu className={menuOpen ? "menu open" : "menu"}>
+        <Menu className={isOpen ? "menu open" : "menu"}>
           <div className="menu-header">
             <strong>Menu</strong>
-            <button className="close-button" onClick={handleCloseMenu}>
+            <button className="close-button" onClick={closeMenu}>
               <XCircleFill size={20} color="white" />
             </button>
           </div>
 
           <ul>
             <li>
-              <button className="menu-button" onClick={() => navigate("/")}>
+              <button
+                className="menu-button"
+                onClick={() => {
+                  closeMenu();
+                  navigate("/");
+                }}
+              >
                 Página inicial
               </button>
             </li>
             <li>
               <button
                 className="menu-button"
-                onClick={() => navigate("/confirmar-presenca")}
+                onClick={() => {
+                  closeMenu();
+                  navigate("/confirmar-presenca");
+                }}
               >
                 Confirmar presença
               </button>
             </li>
+
             <li>
               <button
                 className="menu-button"
-                onClick={() => navigate("/mensagens")}
+                onClick={() => {
+                  closeMenu();
+                  navigate("/mensagens");
+                }}
               >
                 Mensagem para os noivos
               </button>
             </li>
             <li>
-              <button
-                className="menu-button"
-                // onClick={() => navigate("/lista-de-presentes")}
-              >
+              <button className="menu-button" disabled>
                 Lista de presentes
               </button>
             </li>
@@ -66,12 +69,13 @@ export default function Home({ actualPage }) {
         <h1>{actualPage} </h1>
         <Logo src={logo} />
       </div>
+      {isOpen && <div className="overlay" onClick={closeMenu}></div>}
       <div className="bar"></div>
-    </Header>
+    </HeaderContainer>
   );
 }
 
-const Header = styled.div`
+const HeaderContainer = styled.div`
   position: fixed;
   left: 0px;
   top: 0px;
@@ -101,6 +105,15 @@ const Header = styled.div`
     width: 100%;
     height: 54px;
     background: #000080;
+  }
+  .overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 0;
   }
 `;
 
@@ -173,6 +186,7 @@ const Menu = styled.div`
     position: absolute;
     top: 10px;
     right: 10px;
+
     background-color: transparent;
     border: none;
     cursor: pointer;

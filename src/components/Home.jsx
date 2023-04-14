@@ -1,17 +1,25 @@
-import axios from "axios";
 import styled from "styled-components";
 import { useNavigate } from "react-router";
+import { useEffect } from "react";
 import Header from "./common/Header";
 import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
 import Countdown from "./Countdown";
+import { useMenu } from "../contexts/MeuContext";
 
 export default function Home() {
   const navigate = useNavigate();
   const ACTUAL_PAGE = "Kléria & Lucas";
+  const { isMenuOpen, toggleMenu } = useMenu();
+
+  function handleMenuClick() {
+    toggleMenu();
+  }
+
   return (
     <Container>
-      <Header actualPage={ACTUAL_PAGE} />
+      <Header actualPage={ACTUAL_PAGE} onMenuClick={handleMenuClick} />
+      {isMenuOpen && <MenuOverlay onClick={handleMenuClick} />}
       <Img_first src={photo} />
       <Countdown />
       <p className="acknowledgment">
@@ -64,6 +72,7 @@ const Container = styled.div`
     color: #000000;
   }
 `;
+
 const Img_first = styled.img`
   margin-top: 54px;
   width: 100%;
@@ -80,4 +89,14 @@ const Button = styled.div`
   border-radius: 6px;
   color: #fff;
   font-size: 16px;
+`;
+
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
 `;

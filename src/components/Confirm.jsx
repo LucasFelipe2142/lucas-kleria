@@ -8,18 +8,26 @@ import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
 import Countdown from "./Countdown";
 import Map from "./common/Map";
+import { useMenu } from "../contexts/MeuContext";
 
 export default function Confirm() {
+  const { isMenuOpen, setIsMenuOpen } = useMenu();
+
   const { pathname } = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
   const [nomeConvidado, setNomeConvidado] = useState("");
+
   const navigate = useNavigate();
+
   const ACTUAL_PAGE = "Confirmar Presença";
+
   return (
-    <Container>
-      <Header actualPage={ACTUAL_PAGE} />
+    <Container isMenuOpen={isMenuOpen}>
+      <Header actualPage={ACTUAL_PAGE} setIsMenuOpen={setIsMenuOpen} />
       <Img_first src={photo} />
       <Countdown />
       <div className="containerInfo">

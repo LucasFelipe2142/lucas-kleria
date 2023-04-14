@@ -7,9 +7,14 @@ import Header from "./common/Header";
 import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
 import Countdown from "./Countdown";
-import Map from "./common/Map";
+import { useMenu } from "../contexts/MeuContext";
 
 export default function Confirm() {
+  const { isMenuOpen, toggleMenu } = useMenu();
+
+  function handleMenuClick() {
+    toggleMenu();
+  }
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -20,7 +25,8 @@ export default function Confirm() {
   const ACTUAL_PAGE = "Confirmar Presença";
   return (
     <Container>
-      <Header actualPage={ACTUAL_PAGE} />
+      <Header actualPage={ACTUAL_PAGE} onMenuClick={handleMenuClick} />
+      {isMenuOpen && <MenuOverlay onClick={handleMenuClick} />}
       <Img_first src={photo} />
       <Countdown />
       <p className="messageText">
