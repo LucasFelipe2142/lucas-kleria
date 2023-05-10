@@ -9,6 +9,7 @@ import Footer from "./common/Footer";
 import Countdown from "./Countdown";
 import Map from "./common/Map";
 import { useMenu } from "../contexts/MeuContext";
+import Date from "./common/Date";
 
 export default function Confirm() {
   const { isMenuOpen, setIsMenuOpen } = useMenu();
@@ -20,24 +21,40 @@ export default function Confirm() {
   }, [pathname]);
 
   const [nomeConvidado, setNomeConvidado] = useState("");
+  const [confirmationSuccess, setConfirmationSuccess] = useState(false);
 
   const navigate = useNavigate();
 
   const ACTUAL_PAGE = "Confirmar Presença";
 
   const handleConfirmation = () => {
-    axios
-      .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
-        name: nomeConvidado,
-      })
-      .then((response) => {
-        alert("Confirmação enviada com sucesso!");
-      })
-      .catch((error) => {
-        alert(
-          "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
-        );
-      });
+    if (nomeConvidado !== "") {
+      axios
+        .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
+          name: nomeConvidado,
+        })
+        .then((response) => {
+          setConfirmationSuccess(true);
+        })
+        .catch((error) => {
+          alert(
+            "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
+          );
+        });
+    }
+  };
+
+  const handleNewConfirmation = () => {
+    setConfirmationSuccess(false);
+    setNomeConvidado("");
+  };
+
+  const handleStayOnPage = () => {
+    setConfirmationSuccess(false);
+  };
+
+  const handleGoToHome = () => {
+    navigate("/");
   };
 
   return (
@@ -45,38 +62,7 @@ export default function Confirm() {
       <Header actualPage={ACTUAL_PAGE} setIsMenuOpen={setIsMenuOpen} />
       <Img_first src={photo} />
       <Countdown />
-      <div className="containerInfo">
-        <div className="containerDate">
-          <p>
-            <strong>Data e Hora:</strong>
-          </p>
-        </div>
-        <div className="containerDate">
-          <p>Data:</p>
-          <p>30/09/2023</p>
-        </div>
-        <div className="containerDate">
-          <p>Horário:</p>
-          <p>19:30h</p>
-        </div>
-        <div className="containerDate">
-          <p>
-            <strong>endereço:</strong>
-          </p>
-        </div>
-        <div className="containerDate">
-          <p>Rua:</p>
-          <p>Mailde Pereira Rocha</p>
-        </div>
-        <div className="containerDate">
-          <p>Numero:</p>
-          <p>615</p>
-        </div>
-        <div className="containerDate">
-          <p>Bairro:</p>
-          <p>Antônio Pimenta</p>
-        </div>
-      </div>
+      <Date />
 
       <p className="confirmText">
         Por favor, preencha o campo abaixo com o seu nome completo para
@@ -97,6 +83,19 @@ export default function Confirm() {
       </h1>
       <Map />
       <Footer />
+
+      {confirmationSuccess && (
+        <Modal>
+          <ModalContent>
+            <h2>Confirmação enviada com sucesso!</h2>
+            <ButtonGroup>
+              <Button onClick={handleNewConfirmation}>Nova confirmação</Button>
+              <Button onClick={handleStayOnPage}>Permanecer na página</Button>
+              <Button onClick={handleGoToHome}>Voltar para a home</Button>
+            </ButtonGroup>
+          </ModalContent>
+        </Modal>
+      )}
     </Container>
   );
 }
@@ -149,6 +148,7 @@ const Container = styled.div`
     outline: none;
   }
 `;
+
 const Img_first = styled.img`
   margin-top: 54px;
   width: 100%;
@@ -165,4 +165,37 @@ const Button = styled.div`
   border-radius: 6px;
   color: #fff;
   font-size: 16px;
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ButtonGroup = styled.div`
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
 `;
