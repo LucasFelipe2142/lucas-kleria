@@ -23,6 +23,23 @@ export default function Confirm() {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
   const ACTUAL_PAGE = "Confirmar Presença";
+
+  const handleSend = () => {
+    axios
+      .post("http://18.231.153.189:3001/api/messages", {
+        name: nomeConvidado,
+        message: message,
+      })
+      .then((response) => {
+        alert("Mensagem enviada com sucesso!");
+      })
+      .catch((error) => {
+        alert(
+          "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
+        );
+      });
+  };
+
   return (
     <Container>
       <Header actualPage={ACTUAL_PAGE} onMenuClick={handleMenuClick} />
@@ -53,7 +70,7 @@ export default function Confirm() {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <Button>Enviar Mensagem</Button>
+      <Button onClick={handleSend}>Enviar Mensagem</Button>
       <Footer />
     </Container>
   );

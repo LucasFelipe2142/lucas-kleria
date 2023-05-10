@@ -25,6 +25,21 @@ export default function Confirm() {
 
   const ACTUAL_PAGE = "Confirmar Presença";
 
+  const handleConfirmation = () => {
+    axios
+      .post("http://18.231.153.189:3001/api/guests", {
+        name: nomeConvidado,
+      })
+      .then((response) => {
+        alert("Confirmação enviada com sucesso!");
+      })
+      .catch((error) => {
+        alert(
+          "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
+        );
+      });
+  };
+
   return (
     <Container isMenuOpen={isMenuOpen}>
       <Header actualPage={ACTUAL_PAGE} setIsMenuOpen={setIsMenuOpen} />
@@ -76,7 +91,7 @@ export default function Confirm() {
         value={nomeConvidado}
         onChange={(e) => setNomeConvidado(e.target.value)}
       />
-      <Button>CONFIRMAR PRESENÇA</Button>
+      <Button onClick={handleConfirmation}>CONFIRMAR PRESENÇA</Button>
       <h1 style={{ margin: "40px 0 20px 0", fontSize: "15px" }}>
         <strong>MAPA PARA A CELEBRAÇÃO</strong>
       </h1>
