@@ -103,7 +103,7 @@ export default function Confirm() {
       {confirmationSuccess && (
         <Modal>
           <ModalContent>
-            <h2>Confirmação enviada com sucesso!</h2>
+            <h2>Mensagem enviada com sucesso!</h2>
             <ButtonGroup>
               <ButtonModal onClick={handleNewConfirmation}>
                 Nova mensagem
