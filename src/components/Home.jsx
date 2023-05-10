@@ -45,7 +45,13 @@ export default function Home() {
       <Button onClick={() => navigate("/mensagens")}>
         MENSAGEM PARA OS NOIVOS
       </Button>
-      <Button>LISTA DE PRESENTES</Button>
+      <Button
+        onClick={() =>
+          window.open("https://sites.icasei.com.br/lucasekleria", "_blank")
+        }
+      >
+        LISTA DE PRESENTES
+      </Button>
       <Footer />
     </Container>
   );

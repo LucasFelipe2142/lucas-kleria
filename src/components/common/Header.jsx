@@ -59,7 +59,16 @@ export default function Header({ actualPage }) {
               </button>
             </li>
             <li>
-              <button className="menu-button" disabled>
+              <button
+                className="menu-button"
+                onClick={() =>
+                  window.open(
+                    "https://sites.icasei.com.br/lucasekleria",
+                    "_blank"
+                  )
+                }
+                disabled
+              >
                 Lista de presentes
               </button>
             </li>
