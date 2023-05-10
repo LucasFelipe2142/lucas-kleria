@@ -67,7 +67,6 @@ export default function Header({ actualPage }) {
                     "_blank"
                   )
                 }
-                disabled
               >
                 Lista de presentes
               </button>
