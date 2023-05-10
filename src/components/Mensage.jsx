@@ -8,6 +8,9 @@ import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
 import Countdown from "./Countdown";
 import { useMenu } from "../contexts/MeuContext";
+import emailjs from "emailjs-com";
+import dayjs from "dayjs";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Confirm() {
   const { isMenuOpen, toggleMenu } = useMenu();
@@ -15,8 +18,12 @@ export default function Confirm() {
   const [nomeConvidado, setNomeConvidado] = useState("");
   const [message, setMessage] = useState("");
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [botao, setBotao] = useState("");
+  const [loader, setLoader] = useState("apagar");
+  const [ativado, setAtivado] = useState(true);
+  const [desabilitarinput, setDesabilitarinput] = useState(false);
   const navigate = useNavigate();
-  const ACTUAL_PAGE = "Confirmar Presença";
+  const ACTUAL_PAGE = "Mensagem Para os noivos";
 
   function handleMenuClick() {
     toggleMenu();
@@ -33,33 +40,66 @@ export default function Confirm() {
 
   const handleSend = () => {
     if (isButtonEnabled) {
-      axios
-        .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
-          name: nomeConvidado,
-          message: message,
-        })
-        .then((response) => {
-          setConfirmationSuccess(true);
-        })
-        .catch((error) => {
-          alert(
-            "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
-          );
-        });
+      if (ativado) {
+        setDesabilitarinput(true);
+        setAtivado(!true);
+        setBotao("apagar");
+        setLoader("");
+        axios
+          .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
+            name: nomeConvidado,
+            message: message,
+          })
+          .then((response) => {
+            setConfirmationSuccess(true);
+
+            const dataAtual = dayjs();
+            const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
+            // Configurar o email a ser enviado
+            const emailParams = {
+              to_email: "casamento.lucas.kleria@gmail.com",
+              name: nomeConvidado,
+              message: message,
+              date: dataHoraFormatada,
+            };
+            // Enviar o email
+            emailjs.send(
+              "mail_id",
+              "mensagem_noivos",
+              emailParams,
+              "yf1L-YblCbRjy5ojh"
+            );
+          })
+          .catch((error) => {
+            alert(
+              "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
+            );
+            setDesabilitarinput(false);
+            setAtivado(true);
+            setBotao("");
+            setLoader("apagar");
+          });
+      }
     }
   };
 
   const handleNewConfirmation = () => {
     setConfirmationSuccess(false);
-    setNomeConvidado("");
     setMessage("");
     setIsButtonEnabled(false);
+    setDesabilitarinput(false);
+    setAtivado(true);
+    setBotao("");
+    setLoader("apagar");
   };
 
   const handleStayOnPage = () => {
     setConfirmationSuccess(false);
-    setMessage("");
     setIsButtonEnabled(false);
+    setDesabilitarinput(false);
+    setAtivado(true);
+    setBotao("");
+    setLoader("apagar");
   };
 
   const handleGoToHome = () => {
@@ -86,6 +126,7 @@ export default function Confirm() {
         name="input"
         placeholder="Nome:"
         value={nomeConvidado}
+        disabled={desabilitarinput}
         onChange={(e) =>
           setNomeConvidado(e.target.value.replace(/[^a-zA-Z ]/g, ""))
         }
@@ -95,10 +136,14 @@ export default function Confirm() {
         name="input"
         placeholder="Mensagem:"
         value={message}
+        disabled={desabilitarinput}
         onChange={(e) => setMessage(e.target.value)}
       />
       <Button isButtonEnabled={isButtonEnabled} onClick={handleSend}>
-        Enviar Mensagem
+        <div className={botao}>ENVIAR MENSAGEM</div>
+        <div className={loader}>
+          <ThreeDots color="#FFFFFF" height={60} width={60} />
+        </div>
       </Button>
       {confirmationSuccess && (
         <Modal>
@@ -165,6 +210,13 @@ const Container = styled.div`
     margin: 20px 0 8px 0;
     outline: none;
   }
+  textarea {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 23px;
+    color: #9f9f9f;
+  }
 
   .message {
     width: 85%;
@@ -182,6 +234,9 @@ const Container = styled.div`
     border: none;
     margin: 10px 0 8px 0;
     outline: none;
+  }
+  .apagar {
+    display: none;
   }
 `;
 

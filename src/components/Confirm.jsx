@@ -10,6 +10,9 @@ import Countdown from "./Countdown";
 import Map from "./common/Map";
 import { useMenu } from "../contexts/MeuContext";
 import Date from "./common/Date";
+import emailjs from "emailjs-com";
+import dayjs from "dayjs";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Confirm() {
   const { isMenuOpen, setIsMenuOpen } = useMenu();
@@ -23,6 +26,10 @@ export default function Confirm() {
   const [nomeConvidado, setNomeConvidado] = useState("");
   const [confirmationSuccess, setConfirmationSuccess] = useState(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [botao, setBotao] = useState("");
+  const [loader, setLoader] = useState("apagar");
+  const [ativado, setAtivado] = useState(true);
+  const [desabilitarinput, setDesabilitarinput] = useState(false);
 
   const navigate = useNavigate();
 
@@ -34,28 +41,64 @@ export default function Confirm() {
 
   const handleConfirmation = () => {
     if (isButtonEnabled) {
-      axios
-        .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
-          name: nomeConvidado,
-        })
-        .then((response) => {
-          setConfirmationSuccess(true);
-        })
-        .catch((error) => {
-          alert(
-            "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
-          );
-        });
+      if (ativado) {
+        setDesabilitarinput(true);
+        setAtivado(!true);
+        setBotao("apagar");
+        setLoader("");
+
+        axios
+          .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
+            name: nomeConvidado,
+          })
+          .then((response) => {
+            const dataAtual = dayjs();
+            const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
+            // Configurar o email a ser enviado
+            const emailParams = {
+              to_email: "casamento.lucas.kleria@gmail.com",
+              name: nomeConvidado,
+              date: dataHoraFormatada,
+            };
+            // Enviar o email
+            emailjs.send(
+              "mail_id",
+              "temp_confirm_message",
+              emailParams,
+              "yf1L-YblCbRjy5ojh"
+            );
+
+            setConfirmationSuccess(true);
+          })
+          .catch((error) => {
+            console.log(error);
+            alert(
+              "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
+            );
+            setDesabilitarinput(false);
+            setAtivado(true);
+            setBotao("");
+            setLoader("apagar");
+          });
+      }
     }
   };
 
   const handleNewConfirmation = () => {
     setConfirmationSuccess(false);
     setNomeConvidado("");
+    setDesabilitarinput(false);
+    setAtivado(true);
+    setBotao("");
+    setLoader("apagar");
   };
 
   const handleStayOnPage = () => {
     setConfirmationSuccess(false);
+    setDesabilitarinput(false);
+    setAtivado(true);
+    setBotao("");
+    setLoader("apagar");
   };
 
   const handleGoToHome = () => {
@@ -79,6 +122,7 @@ export default function Confirm() {
         name="input"
         placeholder="Nome do Convidado"
         value={nomeConvidado}
+        disabled={desabilitarinput}
         onChange={(e) =>
           setNomeConvidado(e.target.value.replace(/[^a-zA-Z ]/g, ""))
         }
@@ -87,7 +131,10 @@ export default function Confirm() {
         isButtonEnabled={nomeConvidado !== ""}
         onClick={handleConfirmation}
       >
-        CONFIRMAR PRESENÇA
+        <div className={botao}>CONFIRMAR PRESENÇA</div>
+        <div className={loader}>
+          <ThreeDots color="#FFFFFF" height={60} width={60} />
+        </div>
       </Button>
       <h1 style={{ margin: "40px 0 20px 0", fontSize: "15px" }}>
         <strong>MAPA PARA A CELEBRAÇÃO</strong>
@@ -163,6 +210,9 @@ const Container = styled.div`
     border: none;
     margin: 20px 0 8px 0;
     outline: none;
+  }
+  .apagar {
+    display: none;
   }
 `;
 
