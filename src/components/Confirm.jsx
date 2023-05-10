@@ -22,13 +22,18 @@ export default function Confirm() {
 
   const [nomeConvidado, setNomeConvidado] = useState("");
   const [confirmationSuccess, setConfirmationSuccess] = useState(false);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const navigate = useNavigate();
 
   const ACTUAL_PAGE = "Confirmar Presença";
 
+  useEffect(() => {
+    setIsButtonEnabled(!!nomeConvidado && /^[a-zA-Z ]*$/.test(nomeConvidado));
+  }, [nomeConvidado]);
+
   const handleConfirmation = () => {
-    if (nomeConvidado !== "") {
+    if (isButtonEnabled) {
       axios
         .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
           name: nomeConvidado,
@@ -70,14 +75,20 @@ export default function Confirm() {
         confirmação e a sua presença em nosso grande dia!
       </p>
       <input
-        disabled={false}
         type="text"
         name="input"
         placeholder="Nome do Convidado"
         value={nomeConvidado}
-        onChange={(e) => setNomeConvidado(e.target.value)}
+        onChange={(e) =>
+          setNomeConvidado(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+        }
       />
-      <Button onClick={handleConfirmation}>CONFIRMAR PRESENÇA</Button>
+      <Button
+        isButtonEnabled={nomeConvidado !== ""}
+        onClick={handleConfirmation}
+      >
+        CONFIRMAR PRESENÇA
+      </Button>
       <h1 style={{ margin: "40px 0 20px 0", fontSize: "15px" }}>
         <strong>MAPA PARA A CELEBRAÇÃO</strong>
       </h1>
@@ -89,9 +100,15 @@ export default function Confirm() {
           <ModalContent>
             <h2>Confirmação enviada com sucesso!</h2>
             <ButtonGroup>
-              <Button onClick={handleNewConfirmation}>Nova confirmação</Button>
-              <Button onClick={handleStayOnPage}>Permanecer na página</Button>
-              <Button onClick={handleGoToHome}>Voltar para a home</Button>
+              <ButtonModal onClick={handleNewConfirmation}>
+                Nova confirmação
+              </ButtonModal>
+              <ButtonModal onClick={handleStayOnPage}>
+                Permanecer na página
+              </ButtonModal>
+              <ButtonModal onClick={handleGoToHome}>
+                Voltar para a home
+              </ButtonModal>
             </ButtonGroup>
           </ModalContent>
         </Modal>
@@ -161,10 +178,12 @@ const Button = styled.div`
   margin-top: 10px;
   width: 85%;
   height: 48px;
-  background: #000080;
+  background: ${({ isButtonEnabled }) =>
+    isButtonEnabled ? "#000080" : "#9f9f9f"};
   border-radius: 6px;
   color: #fff;
   font-size: 16px;
+  cursor: ${({ isButtonEnabled }) => (isButtonEnabled ? "pointer" : "default")};
 `;
 
 const Modal = styled.div`
@@ -198,4 +217,17 @@ const ButtonGroup = styled.div`
   flex-direction: column;
   width: 100%;
   margin-top: 20px;
+`;
+
+const ButtonModal = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 85%;
+  height: 48px;
+  background: #000080;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
 `;

@@ -11,33 +11,59 @@ import { useMenu } from "../contexts/MeuContext";
 
 export default function Confirm() {
   const { isMenuOpen, toggleMenu } = useMenu();
+  const [confirmationSuccess, setConfirmationSuccess] = useState(false);
+  const [nomeConvidado, setNomeConvidado] = useState("");
+  const [message, setMessage] = useState("");
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const navigate = useNavigate();
+  const ACTUAL_PAGE = "Confirmar Presença";
 
   function handleMenuClick() {
     toggleMenu();
   }
+
+  useEffect(() => {
+    setIsButtonEnabled(!!nomeConvidado && !!message);
+  }, [nomeConvidado, message]);
+
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-  const [nomeConvidado, setNomeConvidado] = useState("");
-  const [message, setMessage] = useState("");
-  const navigate = useNavigate();
-  const ACTUAL_PAGE = "Confirmar Presença";
 
   const handleSend = () => {
-    axios
-      .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
-        name: nomeConvidado,
-        message: message,
-      })
-      .then((response) => {
-        alert("Mensagem enviada com sucesso!");
-      })
-      .catch((error) => {
-        alert(
-          "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
-        );
-      });
+    if (isButtonEnabled) {
+      axios
+        .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
+          name: nomeConvidado,
+          message: message,
+        })
+        .then((response) => {
+          setConfirmationSuccess(true);
+        })
+        .catch((error) => {
+          alert(
+            "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
+          );
+        });
+    }
+  };
+
+  const handleNewConfirmation = () => {
+    setConfirmationSuccess(false);
+    setNomeConvidado("");
+    setMessage("");
+    setIsButtonEnabled(false);
+  };
+
+  const handleStayOnPage = () => {
+    setConfirmationSuccess(false);
+    setMessage("");
+    setIsButtonEnabled(false);
+  };
+
+  const handleGoToHome = () => {
+    navigate("/");
   };
 
   return (
@@ -56,12 +82,13 @@ export default function Confirm() {
         Kléria e Lucas
       </p>
       <input
-        disabled={false}
         type="text"
         name="input"
         placeholder="Nome:"
         value={nomeConvidado}
-        onChange={(e) => setNomeConvidado(e.target.value)}
+        onChange={(e) =>
+          setNomeConvidado(e.target.value.replace(/[^a-zA-Z ]/g, ""))
+        }
       />
       <textarea
         className="message"
@@ -70,7 +97,30 @@ export default function Confirm() {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       />
-      <Button onClick={handleSend}>Enviar Mensagem</Button>
+      <Button isButtonEnabled={isButtonEnabled} onClick={handleSend}>
+        Enviar Mensagem
+      </Button>
+      {confirmationSuccess && (
+        <Modal>
+          <ModalContent>
+            <h2>Confirmação enviada com sucesso!</h2>
+            <ButtonGroup>
+              <ButtonModal onClick={handleNewConfirmation}>
+                Nova mensagem
+              </ButtonModal>
+              <ButtonModal onClick={handleStayOnPage}>
+                Permanecer na página
+              </ButtonModal>
+              <ButtonModal
+                onClick={handleGoToHome}
+                disabled={!isButtonEnabled || /\d/.test(nomeConvidado)}
+              >
+                Voltar para a home
+              </ButtonModal>
+            </ButtonGroup>
+          </ModalContent>
+        </Modal>
+      )}
       <Footer />
     </Container>
   );
@@ -82,6 +132,7 @@ const Container = styled.div`
   flex-direction: column;
   padding-bottom: 30px;
   background-color: white;
+
   .messageText {
     margin-top: 20px;
     margin-bottom: 20px;
@@ -97,6 +148,7 @@ const Container = styled.div`
 
     color: #000000;
   }
+
   input {
     width: 85%;
     height: 51px;
@@ -113,10 +165,11 @@ const Container = styled.div`
     margin: 20px 0 8px 0;
     outline: none;
   }
+
   .message {
     width: 85%;
-    height: 150px; /* altura fixa */
-    resize: none; /* desativa a opção de redimensionamento do usuário */
+    height: 150px;
+    resize: none;
     background: #f1f3f7;
     border-radius: 5px;
     font-style: normal;
@@ -131,12 +184,61 @@ const Container = styled.div`
     outline: none;
   }
 `;
+
 const Img_first = styled.img`
   margin-top: 54px;
   width: 100%;
 `;
 
 const Button = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 85%;
+  height: 48px;
+  background: ${({ isButtonEnabled }) =>
+    isButtonEnabled ? "#000080" : "#9f9f9f"};
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+  cursor: ${({ isButtonEnabled }) => (isButtonEnabled ? "pointer" : "default")};
+`;
+
+const Modal = styled.div`
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const ButtonGroup = styled.div`
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 20px;
+`;
+
+const ButtonModal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
