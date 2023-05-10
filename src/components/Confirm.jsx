@@ -27,7 +27,7 @@ export default function Confirm() {
 
   const handleConfirmation = () => {
     axios
-      .post("http://18.231.153.189:3001/api/guests", {
+      .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
         name: nomeConvidado,
       })
       .then((response) => {
