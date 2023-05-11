@@ -22,21 +22,45 @@ export default function Home() {
       <Img_first src={photo} />
       <Countdown />
       <p className="acknowledgment">
-        Queridos amigos e familiares <br></br>É com muita alegria que convidamos
-        vocês para compartilhar conosco o dia mais importante de nossas vidas: o
-        nosso casamento. Como pessoas de fé, acreditamos que o amor é um
-        presente maravilhoso que Deus nos dá, e estamos gratos por ter
-        encontrado um ao outro neste mundo. Nosso casamento será uma celebração
-        da nossa fé e do amor que sentimos um pelo outro. Estamos ansiosos para
-        compartilhar este momento especial com vocês e agradecer a Deus por nos
-        abençoar com um ao outro. Esperamos que a cerimônia seja um testemunho
-        do amor de Deus e da nossa dedicação um ao outro. Gostaríamos de
-        convidá-los para visitar o nosso site de casamento, onde vocês podem
-        encontrar informações sobre a cerimônia, a recepção e outras atividades
-        relacionadas ao nosso grande dia. O site também tem detalhes sobre como
-        presentear o casal, se assim desejarem. Agradecemos a sua presença e
-        orações, e esperamos ver vocês lá! Com amor e gratidão,<br></br>Kléria e
-        Lucas
+        Prezados amigos e familiares,
+        <br></br>É com imensa alegria que os convidamos a compartilhar conosco o
+        dia mais importante de nossas vidas: o nosso casamento. Como pessoas de
+        fé, acreditamos que o amor é um presente maravilhoso que Deus nos
+        concede, e somos gratos por termos encontrado um ao outro neste vasto
+        mundo. Nossa união será uma celebração da nossa fé e do intenso amor que
+        nutrimos um pelo outro.
+        <br></br>
+        Ansiamos por compartilhar este momento especial com cada um de vocês e
+        expressar nossa profunda gratidão a Deus por nos abençoar com a dádiva
+        mútua de nossas vidas. Desejamos que nossa cerimônia seja um testemunho
+        do amor divino e do nosso compromisso inabalável um com o outro.
+        <br></br>
+        No nosso site, vocês encontrarão os detalhes sobre a cerimônia,
+        incluindo o local e o horário. Além disso, disponibilizamos um
+        formulário de confirmação de presença para que possamos planejar tudo
+        com antecedência e receber cada um de vocês com alegria.
+        <br></br>
+        Sabemos quemuitos de vocês desejam nos presentear e estamos muito gratos
+        por seu amor e generosidade. Pensando nisso, criamos uma lista de
+        presentes online, onde vocês podem encontrar sugestões de presentes que
+        nos seriam úteis em nossa nova vida juntos. No entanto, a maior dádiva
+        que vocês podem nos oferecer é a sua presença e suas orações.
+        <br></br>
+        Também há um espaço para deixarem uma mensagem especial para nós, onde
+        poderão compartilhar seus bons desejos e palavras de encorajamento.
+        Essas mensagens nos tocarão profundamente e serão lembranças preciosas
+        ao longo dos anos.
+        <br></br>
+        Agradecemos imensamente por fazerem parte de nossas vidas e por estarem
+        presentes neste dia tão significativo para nós. Compartilhar este
+        momento com pessoas queridas como vocês torna tudo ainda mais especial.
+        Esperamos vê-los no nosso casamento e celebrar juntos o amor e a bênção
+        de Deus.
+        <br></br>
+        <br></br>
+        Com todo o nosso amor e gratidão,
+        <br></br>
+        Kléria e Lucas
       </p>
       <Button onClick={() => navigate("/confirmar-presenca")}>
         CONFIRMAR PRESENÇA
