@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { useEffect } from "react";
 import Header from "./common/Header";
 import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
