@@ -86,6 +86,7 @@ export default function Results() {
 
 const Container = styled.div`
   margin-top: 54px;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   flex-direction: column;
