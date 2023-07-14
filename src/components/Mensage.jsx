@@ -1,16 +1,17 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useNavigate } from "react-router";
-import Header from "./common/Header";
-import photo from "../assets/photo.png";
-import Footer from "./common/Footer";
-import Countdown from "./Countdown";
-import { useMenu } from "../contexts/MeuContext";
+import axios from "axios";
 import emailjs from "emailjs-com";
 import dayjs from "dayjs";
 import { ThreeDots } from "react-loader-spinner";
+
+import Header from "./common/Header";
+import Footer from "./common/Footer";
+import Countdown from "./Countdown";
+import { useMenu } from "../contexts/MeuContext";
+import { messageText } from "./common/Texts";
+import photo from "../assets/casmDam.png";
 
 export default function Confirm() {
   const { isMenuOpen, toggleMenu } = useMenu();
@@ -24,66 +25,64 @@ export default function Confirm() {
   const [desabilitarinput, setDesabilitarinput] = useState(false);
   const navigate = useNavigate();
   const ACTUAL_PAGE = "Mensagem Para os noivos";
-
-  function handleMenuClick() {
-    toggleMenu();
-  }
+  const { pathname } = useLocation();
 
   useEffect(() => {
     setIsButtonEnabled(!!nomeConvidado && !!message);
   }, [nomeConvidado, message]);
 
-  const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const handleSend = () => {
-    if (isButtonEnabled) {
-      if (ativado) {
-        setDesabilitarinput(true);
-        setAtivado(!true);
-        setBotao("apagar");
-        setLoader("");
-        axios
-          .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
+  function handleMenuClick() {
+    toggleMenu();
+  }
+
+  function handleSend() {
+    if (isButtonEnabled && ativado) {
+      setDesabilitarinput(true);
+      setAtivado(false);
+      setBotao("apagar");
+      setLoader("");
+
+      axios
+        .post("https://api.casamento-lucas-kleria.com.br/api/messages", {
+          name: nomeConvidado,
+          message: message,
+        })
+        .then((response) => {
+          setConfirmationSuccess(true);
+          const dataAtual = dayjs();
+          const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
+
+          const emailParams = {
+            to_email: "casamento.lucas.kleria@gmail.com",
             name: nomeConvidado,
             message: message,
-          })
-          .then((response) => {
-            setConfirmationSuccess(true);
+            date: dataHoraFormatada,
+          };
 
-            const dataAtual = dayjs();
-            const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
-            // Configurar o email a ser enviado
-            const emailParams = {
-              to_email: "casamento.lucas.kleria@gmail.com",
-              name: nomeConvidado,
-              message: message,
-              date: dataHoraFormatada,
-            };
-            // Enviar o email
-            emailjs.send(
-              "mail_id",
-              "mensagem_noivos",
-              emailParams,
-              "yf1L-YblCbRjy5ojh"
-            );
-          })
-          .catch((error) => {
-            alert(
-              "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
-            );
-            setDesabilitarinput(false);
-            setAtivado(true);
-            setBotao("");
-            setLoader("apagar");
-          });
-      }
+          emailjs.send(
+            "mail_id",
+            "mensagem_noivos",
+            emailParams,
+            "yf1L-YblCbRjy5ojh"
+          );
+        })
+        .catch((error) => {
+          alert(
+            "Erro ao enviar mensagem. Por favor, tente novamente mais tarde."
+          );
+          setDesabilitarinput(false);
+          setAtivado(true);
+          setBotao("");
+          setLoader("apagar");
+        });
     }
-  };
+  }
 
-  const handleNewConfirmation = () => {
+  function handleNewConfirmation() {
     setConfirmationSuccess(false);
     setMessage("");
     setIsButtonEnabled(false);
@@ -91,20 +90,20 @@ export default function Confirm() {
     setAtivado(true);
     setBotao("");
     setLoader("apagar");
-  };
+  }
 
-  const handleStayOnPage = () => {
+  function handleStayOnPage() {
     setConfirmationSuccess(false);
     setIsButtonEnabled(false);
     setDesabilitarinput(false);
     setAtivado(true);
     setBotao("");
     setLoader("apagar");
-  };
+  }
 
-  const handleGoToHome = () => {
+  function handleGoToHome() {
     navigate("/");
-  };
+  }
 
   return (
     <Container>
@@ -112,15 +111,7 @@ export default function Confirm() {
       {isMenuOpen && <MenuOverlay onClick={handleMenuClick} />}
       <Img_first src={photo} />
       <Countdown />
-      <p className="messageText">
-        Queridos convidados, adoraríamos receber uma mensagem carinhosa de vocês
-        para nos ajudar a tornar este dia ainda mais especial. Por favor, deixe
-        sua mensagem no campo abaixo e saiba que estamos muito felizes por
-        compartilhar este momento com vocês. Obrigado pelo amor e carinho.
-        <br></br>
-        <br></br>
-        Kléria e Lucas
-      </p>
+      <p className="messageText">{messageText}</p>
       <input
         type="text"
         name="input"

@@ -1,27 +1,24 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useNavigate } from "react-router";
+import axios from "axios";
+import emailjs from "emailjs-com";
+import dayjs from "dayjs";
+import { ThreeDots } from "react-loader-spinner";
+
 import Header from "./common/Header";
-import photo from "../assets/photo.png";
 import Footer from "./common/Footer";
 import Countdown from "./Countdown";
 import Map from "./common/Map";
 import { useMenu } from "../contexts/MeuContext";
 import Date from "./common/Date";
-import emailjs from "emailjs-com";
-import dayjs from "dayjs";
-import { ThreeDots } from "react-loader-spinner";
+import { confirmText } from "./common/Texts";
+import photo from "../assets/bendito.png";
 
 export default function Confirm() {
   const { isMenuOpen, setIsMenuOpen } = useMenu();
-
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+  const navigate = useNavigate();
 
   const [nomeConvidado, setNomeConvidado] = useState("");
   const [confirmationSuccess, setConfirmationSuccess] = useState(false);
@@ -31,56 +28,59 @@ export default function Confirm() {
   const [ativado, setAtivado] = useState(true);
   const [desabilitarinput, setDesabilitarinput] = useState(false);
 
-  const navigate = useNavigate();
-
   const ACTUAL_PAGE = "Confirmar Presença";
 
   useEffect(() => {
     setIsButtonEnabled(!!nomeConvidado && /^[a-zA-Z ]*$/.test(nomeConvidado));
   }, [nomeConvidado]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  const handleMenuClick = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   const handleConfirmation = () => {
-    if (isButtonEnabled) {
-      if (ativado) {
-        setDesabilitarinput(true);
-        setAtivado(!true);
-        setBotao("apagar");
-        setLoader("");
+    if (isButtonEnabled && ativado) {
+      setDesabilitarinput(true);
+      setAtivado(false);
+      setBotao("apagar");
+      setLoader("");
 
-        axios
-          .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
+      axios
+        .post("https://api.casamento-lucas-kleria.com.br/api/guests", {
+          name: nomeConvidado,
+        })
+        .then((response) => {
+          const dataAtual = dayjs();
+          const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
+          const emailParams = {
+            to_email: "casamento.lucas.kleria@gmail.com",
             name: nomeConvidado,
-          })
-          .then((response) => {
-            const dataAtual = dayjs();
-            const dataHoraFormatada = dataAtual.format("DD/MM/YYYY HH:mm:ss");
-            // Configurar o email a ser enviado
-            const emailParams = {
-              to_email: "casamento.lucas.kleria@gmail.com",
-              name: nomeConvidado,
-              date: dataHoraFormatada,
-            };
-            // Enviar o email
-            emailjs.send(
-              "mail_id",
-              "temp_confirm_message",
-              emailParams,
-              "yf1L-YblCbRjy5ojh"
-            );
+            date: dataHoraFormatada,
+          };
 
-            setConfirmationSuccess(true);
-          })
-          .catch((error) => {
-            console.log(error);
-            alert(
-              "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
-            );
-            setDesabilitarinput(false);
-            setAtivado(true);
-            setBotao("");
-            setLoader("apagar");
-          });
-      }
+          emailjs.send(
+            "mail_id",
+            "temp_confirm_message",
+            emailParams,
+            "yf1L-YblCbRjy5ojh"
+          );
+
+          setConfirmationSuccess(true);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert(
+            "Erro ao enviar confirmação. Por favor, tente novamente mais tarde."
+          );
+          setDesabilitarinput(false);
+          setAtivado(true);
+          setBotao("");
+          setLoader("apagar");
+        });
     }
   };
 
@@ -112,11 +112,7 @@ export default function Confirm() {
       <Countdown />
       <Date />
 
-      <p className="confirmText">
-        Por favor, preencha o campo abaixo com o seu nome completo para
-        confirmar a sua presença no nosso casamento. Agradecemos desde já a sua
-        confirmação e a sua presença em nosso grande dia!
-      </p>
+      <p className="confirmText">{confirmText}</p>
       <input
         type="text"
         name="input"
