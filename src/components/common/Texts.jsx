@@ -24,8 +24,8 @@ const homeText = (
     um de vocês com alegria.
     <br></br>
     <br></br>
-    Sabemos quemuitos de vocês desejam nos presentear e estamos muito gratos por
-    seu amor e generosidade. Pensando nisso, criamos uma lista de presentes
+    Sabemos que muitos de vocês desejam nos presentear e estamos muito gratos
+    por seu amor e generosidade. Pensando nisso, criamos uma lista de presentes
     online, onde vocês podem encontrar sugestões de presentes que nos seriam
     úteis em nossa nova vida juntos. No entanto, a maior dádiva que vocês podem
     nos oferecer é a sua presença e suas orações.
