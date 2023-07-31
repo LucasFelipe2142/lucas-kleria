@@ -71,6 +71,17 @@ export default function Header({ actualPage }) {
                 Lista de presentes
               </button>
             </li>
+            <li>
+              <button
+                className="menu-button"
+                onClick={() => {
+                  closeMenu();
+                  navigate("/results");
+                }}
+              >
+                Resultados (para os noivos)
+              </button>
+            </li>
           </ul>
         </Menu>
 

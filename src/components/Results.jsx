@@ -10,7 +10,11 @@ export default function Results() {
   const { isMenuOpen, toggleMenu } = useMenu();
   const [guests, setGuests] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [email, setEmail] = useState("");
+  const [accessGranted, setAccessGranted] = useState(false);
+
   const ACTUAL_PAGE = "Confirmações e Mensagens";
+
   function handleMenuClick() {
     toggleMenu();
   }
@@ -35,51 +39,98 @@ export default function Results() {
       });
   }, []);
 
+  function handleFormSubmit(event) {
+    event.preventDefault();
+
+    if (
+      email === "lucasfelicio378@gmail.com" ||
+      email === "Kleriagusmao@gmail.com"
+    ) {
+      setAccessGranted(true);
+    } else {
+      setAccessGranted(false);
+    }
+  }
+
   return (
     <Container>
       <Header actualPage={ACTUAL_PAGE} onMenuClick={handleMenuClick} />
       {isMenuOpen && <MenuOverlay onClick={handleMenuClick} />}
-      <Container2>
-        <Box>
-          <Table>
-            <thead>
-              <TableRow>
-                <TableHeader>Convidados Confiramdos</TableHeader>
-              </TableRow>
-            </thead>
-            <tbody>
-              {guests.map((guest) => (
-                <TableRow key={guest._id}>
-                  <TableData>{guest.name}</TableData>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </Box>
+      {!accessGranted ? (
+        <FormContainer>
+          <Form onSubmit={handleFormSubmit}>
+            <FormLabel htmlFor="email">
+              Digite seu email para confirmação de acesso:
+            </FormLabel>
+            <FormInput
+              type="email"
+              id="email"
+              value={email}
+              placeholder="E-mail"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <FormButton
+              type="submit"
+              onClick={() => {
+                if (
+                  email !== "lucasfelicio378@gmail.com" &&
+                  email !== "Kleriagusmao@gmail.com"
+                )
+                  alert("Acesso permitido somente aos noivos");
+              }}
+            >
+              Submit
+            </FormButton>
+          </Form>
+        </FormContainer>
+      ) : (
+        <>
+          <Header actualPage={ACTUAL_PAGE} onMenuClick={handleMenuClick} />
+          {isMenuOpen && <MenuOverlay onClick={handleMenuClick} />}
+          <Container2>
+            <Box>
+              <Table>
+                <thead>
+                  <TableRow>
+                    <TableHeader>Convidados Confiramdos</TableHeader>
+                  </TableRow>
+                </thead>
+                <tbody>
+                  {guests.map((guest) => (
+                    <TableRow key={guest._id}>
+                      <TableData>{guest.name}</TableData>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            </Box>
 
-        <Box>
-          <Table>
-            <thead>
-              <TableRow>
-                <TableHeader>Mensagens para os noivos</TableHeader>
-              </TableRow>
-            </thead>
-            <tbody>
-              {messages.map((message) => (
-                <TableRow key={message._id}>
-                  <TableData>
-                    <strong>{message.name}</strong>
-                    <br />
-                    <br />
-                    <div className="text">{message.message}</div>
-                  </TableData>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        </Box>
-      </Container2>
-      <Footer />
+            <Box>
+              <Table>
+                <thead>
+                  <TableRow>
+                    <TableHeader>Mensagens para os noivos</TableHeader>
+                  </TableRow>
+                </thead>
+                <tbody>
+                  {messages.map((message) => (
+                    <TableRow key={message._id}>
+                      <TableData>
+                        <strong>{message.name}</strong>
+                        <br />
+                        <br />
+                        <div className="text">{message.message}</div>
+                      </TableData>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            </Box>
+          </Container2>
+          <Footer />
+        </>
+      )}
     </Container>
   );
 }
@@ -92,6 +143,56 @@ const Container = styled.div`
   flex-direction: column;
   padding-bottom: 30px;
   background-color: white;
+`;
+
+const FormContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const FormLabel = styled.label`
+  margin-top: 10px;
+  font-weight: bold;
+`;
+
+const FormInput = styled.input`
+  width: 100%;
+  height: 51px;
+  background: #f1f3f7;
+  border-radius: 5px;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 20px;
+  line-height: 23px;
+  color: #9f9f9f;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none;
+  margin: 20px 0 8px 0;
+  outline: none;
+`;
+
+const FormButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+  height: 48px;
+  background: #000080;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
 `;
 
 const Container2 = styled.div`
